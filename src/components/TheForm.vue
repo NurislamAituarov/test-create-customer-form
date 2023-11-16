@@ -60,27 +60,43 @@
     </div>
 
     <div class="form__group">
-      <label for="gender">Пол</label>
-      <select v-model="$v.gender.$model" id="gender">
-        <!-- Add options for gender -->
-      </select>
+      <label for="phoneNumber">Пол</label>
+
+      <form-select
+        label="Пол"
+        placeholder="муж"
+        :options="['муж', 'жен']"
+        v-model="$v.gender.$model"
+      />
     </div>
 
     <div class="form__group">
       <label for="customerGroup">Группа клиентов*</label>
-      <select v-model="$v.customerGroup.$model" id="customerGroup" multiple>
-        <option value="VIP">VIP</option>
-        <option value="Проблемные">Проблемные</option>
-        <option value="ОМС">ОМС</option>
-      </select>
-      <span v-if="!$v.customerGroup.required">Группа клиентов обязательна</span>
+
+      <form-select
+        label="Группа клиентов"
+        placeholder=""
+        multiselect
+        :options="['VIP', 'Проблемные', 'ОМС']"
+        v-model="$v.customerGroup.$model"
+      />
+
+      <span
+        v-if="$v.customerGroup.$error && !$v.customerGroup.required"
+        class="form__error"
+        >Группа клиентов обязательна</span
+      >
     </div>
 
     <div class="form__group">
       <label for="doctor">Лечащий врач</label>
-      <select v-model="$v.doctor.$model" id="doctor">
-        <!-- Add options for doctors -->
-      </select>
+
+      <form-select
+        label="Лечащий врач"
+        placeholder=""
+        :options="['Иванов', 'Захаров', 'Чернышева']"
+        v-model="$v.doctor.$model"
+      />
     </div>
 
     <div class="form__group">
@@ -94,8 +110,10 @@
 
 <script>
 import { required, minLength, helpers } from "vuelidate/lib/validators";
+import FormSelect from "./FormSelect.vue";
 
 export default {
+  components: { FormSelect },
   data() {
     return {
       // Form model
