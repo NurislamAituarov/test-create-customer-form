@@ -461,6 +461,7 @@ export default {
   color: #f57f6c;
   display: block;
   font-size: 12px;
+  line-height: 14px;
 }
 
 .line {
@@ -504,6 +505,14 @@ export default {
   }
   .form__group-dateIssue {
     grid-row: 4;
+  }
+}
+
+@media all and (max-width: 768px) {
+  .form {
+    padding: 10px;
+    box-shadow: none;
+    height: 100%;
   }
 }
 </style>
