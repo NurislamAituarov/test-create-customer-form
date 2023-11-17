@@ -73,6 +73,9 @@
       <span v-else-if="!$v.phoneNumber.startsWith7" class="form__error"
         >Номер телефона должен начинаться с 7</span
       >
+      <span v-else-if="!$v.phoneNumber.numeric" class="form__error">
+        Номер состоит из цифр
+      </span>
       <span v-else-if="!$v.phoneNumber.minLength" class="form__error"
         >Номер телефона должен содержать 11 цифр</span
       >
@@ -307,6 +310,7 @@ export default {
     birthdate: { required },
     phoneNumber: {
       required,
+      numeric,
       minLength: minLength(11),
       startsWith7: helpers.regex("startsWith", /^7/),
     },
