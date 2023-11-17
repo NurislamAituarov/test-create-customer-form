@@ -131,58 +131,54 @@
     <h4>Адрес:</h4>
 
     <div class="address">
-      <div class="form__group form__group-index">
-        <input
-          v-model="$v.index.$model"
-          type="text"
-          id="index"
-          placeholder="Индекс"
-        />
-      </div>
-      <div class="form__group form__group-country">
-        <input
-          v-model="$v.country.$model"
-          type="text"
-          id="country"
-          placeholder="Страна"
-        />
-      </div>
-      <div class="form__group form__group-region">
-        <input
-          v-model="$v.region.$model"
-          type="text"
-          id="region"
-          placeholder="Облость"
-        />
-      </div>
-      <div class="form__group form__group-city">
-        <input
-          v-model="$v.city.$model"
-          type="text"
-          id="city"
-          placeholder="Город*"
-          :class="{ 'form__input-error': $v.city.$error }"
-        />
-        <span v-if="$v.city.$error && !$v.city.required" class="form__error"
-          >Город проживания обязателен</span
-        >
-      </div>
-      <div class="form__group form__group-street">
-        <input
-          v-model="$v.street.$model"
-          type="text"
-          id="street"
-          placeholder="Улица"
-        />
-      </div>
-      <div class="form__group form__group-house">
-        <input
-          v-model="$v.house.$model"
-          type="text"
-          id="house"
-          placeholder="Дом"
-        />
-      </div>
+      <form-group
+        v-model="$v.index.$model"
+        type="text"
+        placeholder="Индекс"
+        id="index"
+        group-type="index"
+        :validations="$v.index"
+      />
+      <form-group
+        v-model="$v.country.$model"
+        type="text"
+        placeholder="Страна"
+        id="country"
+        group-type="country"
+        :validations="$v.country"
+      />
+      <form-group
+        type="text"
+        v-model="$v.region.$model"
+        placeholder="Облость"
+        id="region"
+        group-type="region"
+        :validations="$v.region"
+      />
+      <form-group
+        type="text"
+        v-model="$v.city.$model"
+        placeholder="Город*"
+        id="city"
+        group-type="city"
+        :validations="$v.city"
+      />
+      <form-group
+        v-model="$v.street.$model"
+        type="text"
+        placeholder="Улица"
+        id="street"
+        group-type="street"
+        :validations="$v.street"
+      />
+      <form-group
+        v-model="$v.house.$model"
+        type="text"
+        placeholder="Дом"
+        id="house"
+        group-type="house"
+        :validations="$v.house"
+      />
     </div>
 
     <hr class="line" />
@@ -271,9 +267,10 @@ import {
 } from "vuelidate/lib/validators";
 import BaseBtn from "./base/BaseSubmitBtn.vue";
 import FormSelect from "./FormSelect.vue";
+import FormGroup from "./FormGroup.vue";
 
 export default {
-  components: { FormSelect, BaseBtn },
+  components: { FormSelect, BaseBtn, FormGroup },
   data() {
     return {
       lastName: "",
@@ -395,6 +392,7 @@ export default {
   label {
     display: inline-block;
     margin-bottom: 5px;
+    color: gray;
   }
   input {
     padding: 7px 11px;
@@ -478,17 +476,6 @@ export default {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 10px;
-  .form__group-country {
-    grid-column: 2/5;
-  }
-  .form__group-region,
-  .form__group-street {
-    grid-column: 1/3;
-  }
-  .form__group-city,
-  .form__group-house {
-    grid-column: 3/5;
-  }
 }
 
 .passport {
@@ -498,7 +485,7 @@ export default {
 
   .form__group-documentType {
     grid-column: 1/3;
-    .FormSelect__control {
+    .form-select__control {
       max-width: 100%;
     }
   }
@@ -508,6 +495,7 @@ export default {
   }
   .form__group-dateIssue {
     grid-row: 4;
+    max-width: 200px;
   }
 }
 
@@ -517,7 +505,7 @@ export default {
     box-shadow: none;
     height: 100%;
     .form__group,
-    .FormSelect__control {
+    .form-select__control {
       max-width: 100% !important;
     }
   }

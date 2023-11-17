@@ -19,7 +19,7 @@ export default {
 
 <style scoped lang="scss">
 .btn {
-  height: 40px;
+  min-height: 40px;
   padding: 10px;
   border-radius: 4px;
   border: none;
