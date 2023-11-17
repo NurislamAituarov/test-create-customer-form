@@ -27,6 +27,7 @@ export default {
   transition: all 0.5s;
   background-color: #d7d7d7;
   font-weight: 700;
+  color: black;
   &:hover {
     opacity: 0.7;
   }
