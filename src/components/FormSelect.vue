@@ -1,8 +1,8 @@
 <template>
-  <div class="FormSelect__control" :class="{ multiselect: multiselect }">
+  <div class="form-select__control" :class="{ multiselect: multiselect }">
     <button
       ref="button"
-      class="FormSelect__button"
+      class="form-select__button"
       aria-haspopup="listbox"
       :id="`${_uid}-button`"
       :aria-labelledby="`${_uid}-label ${_uid}-button`"
@@ -14,12 +14,12 @@
       @keyup.down.prevent="selectNextOption"
     >
       {{ valueMain }}
-      <span v-if="!value" class="FormSelect__placeholder">{{
+      <span v-if="!value" class="form-select__placeholder">{{
         placeholder
       }}</span>
       <SvgAngle
-        class="FormSelect__icon"
-        :class="{ 'FormSelect__icon--rotate-180': optionsVisible }"
+        class="form-select__icon"
+        :class="{ 'form-select__icon--rotate-180': optionsVisible }"
       />
     </button>
 
@@ -30,7 +30,7 @@
       role="listbox"
       :aria-labelledby="`${_uid}-label`"
       :aria-activedescendant="activeDescendant"
-      class="FormSelect__options"
+      class="form-select__options"
       @keyup.up.prevent="selectPrevOption"
       @keyup.down.prevent="selectNextOption"
       @keydown="search"
@@ -46,7 +46,7 @@
           'has-focus': activeOptionIndex === index,
           'selected-option': multiselect && value.includes(option),
         }"
-        class="FormSelect__option"
+        class="form-select__option"
         role="option"
         @click="handleOptionClick(option)"
       >
@@ -195,7 +195,7 @@ export default {
 </script>
   
   <style scoped lang="scss">
-.FormSelect {
+.form-select {
   &__control {
     max-width: 200px;
     position: relative;
@@ -216,6 +216,7 @@ export default {
     cursor: pointer;
     padding: 10px;
     font-weight: bold;
+    color: black;
   }
 
   &__icon {
