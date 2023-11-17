@@ -12,8 +12,16 @@ body {
   overflow-x: hidden;
   margin-right: calc(-1 * (100vw - 100%));
 }
+::-webkit-scrollbar {
+  width: 6px;
+  height: auto;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #dbdbdb;
+  border-radius: 5px;
+}
 .main {
   max-width: 1440px;
-  margin: 20px auto;
+  margin: 50px auto;
   padding: 20px;
 }

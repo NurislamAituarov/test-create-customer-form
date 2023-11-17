@@ -128,7 +128,7 @@
 
     <hr class="line" />
 
-    <h3>Адрес:</h3>
+    <h4>Адрес:</h4>
 
     <div class="address">
       <div class="form__group form__group-index">
@@ -143,7 +143,7 @@
         <input
           v-model="$v.country.$model"
           type="text"
-          id="index"
+          id="country"
           placeholder="Страна"
         />
       </div>
@@ -151,7 +151,7 @@
         <input
           v-model="$v.region.$model"
           type="text"
-          id="index"
+          id="region"
           placeholder="Облость"
         />
       </div>
@@ -159,8 +159,9 @@
         <input
           v-model="$v.city.$model"
           type="text"
-          id="index"
+          id="city"
           placeholder="Город*"
+          :class="{ 'form__input-error': $v.city.$error }"
         />
         <span v-if="$v.city.$error && !$v.city.required" class="form__error"
           >Город проживания обязателен</span
@@ -170,7 +171,7 @@
         <input
           v-model="$v.street.$model"
           type="text"
-          id="index"
+          id="street"
           placeholder="Улица"
         />
       </div>
@@ -178,9 +179,80 @@
         <input
           v-model="$v.house.$model"
           type="text"
-          id="index"
+          id="house"
           placeholder="Дом"
         />
+      </div>
+    </div>
+
+    <h4>Паспорт:</h4>
+
+    <div class="passport">
+      <div class="form__group form__group-documentType">
+        <label for="doctor">Тип документа<span class="required">*</span></label>
+
+        <form-select
+          label="Тип документа"
+          placeholder="-"
+          :options="[
+            'Паспорт',
+            'Свидетельство о рождении',
+            'Вод. удостоверение',
+          ]"
+          :error="$v.documentType.$error"
+          v-model="$v.documentType.$model"
+        />
+
+        <span
+          v-if="$v.documentType.$error && !$v.documentType.required"
+          class="form__error"
+          >Тип документа обязательна</span
+        >
+      </div>
+      <div class="form__group form__group-series">
+        <input
+          v-model="$v.series.$model"
+          type="text"
+          id="series"
+          placeholder="Серия"
+        />
+      </div>
+      <div class="form__group form__group-number">
+        <input
+          v-model="$v.number.$model"
+          type="text"
+          id="number"
+          placeholder="Номер"
+          :class="{ 'form__input-error': $v.number.$error }"
+        />
+        <span v-if="!$v.number.numeric" class="form__error">
+          Номер состоит из цифр
+        </span>
+      </div>
+      <div class="form__group form__group-issuedBy">
+        <input
+          v-model="$v.issuedBy.$model"
+          type="text"
+          id="issuedBy"
+          placeholder="Кем выдан"
+        />
+      </div>
+      <div class="form__group form__group-dateIssue">
+        <label for="birthdate"
+          >Дата выдачи<span class="required">*</span></label
+        >
+        <input
+          v-model="$v.dateIssue.$model"
+          type="date"
+          id="dateIssue"
+          placeholder="Дата выдачи*"
+          :class="{ 'form__input-error': $v.dateIssue.$error }"
+        />
+        <span
+          v-if="$v.dateIssue.$error && !$v.dateIssue.required"
+          class="form__error"
+          >Дата выдачи обязательна</span
+        >
       </div>
     </div>
 
@@ -189,7 +261,12 @@
 </template>
 
 <script>
-import { required, minLength, helpers } from "vuelidate/lib/validators";
+import {
+  required,
+  minLength,
+  helpers,
+  numeric,
+} from "vuelidate/lib/validators";
 import BaseBtn from "./base/BaseSubmitBtn.vue";
 import FormSelect from "./FormSelect.vue";
 
@@ -197,7 +274,6 @@ export default {
   components: { FormSelect, BaseBtn },
   data() {
     return {
-      // Form model
       lastName: "",
       firstName: "",
       patronymic: "",
@@ -214,6 +290,12 @@ export default {
       city: "",
       street: "",
       house: "",
+
+      documentType: "",
+      series: "",
+      number: "",
+      issuedBy: "",
+      dateIssue: "",
 
       submitStatus: null,
       loading: "disabled",
@@ -239,6 +321,11 @@ export default {
     city: { required },
     street: {},
     house: {},
+    documentType: { required },
+    series: {},
+    number: { numeric },
+    issuedBy: {},
+    dateIssue: { required },
   },
   methods: {
     submitForm() {
@@ -260,8 +347,19 @@ export default {
             (this.customerGroup = []),
             (this.doctor = ""),
             (this.noSms = false),
-            (this.submitStatus = null);
-          this.loading = "success";
+            (this.submitStatus = null),
+            (this.city = ""),
+            (this.index = ""),
+            (this.country = ""),
+            (this.region = ""),
+            (this.street = ""),
+            (this.house = ""),
+            (this.documentType = ""),
+            (this.series = ""),
+            (this.number = ""),
+            (this.issuedBy = ""),
+            (this.dateIssue = ""),
+            (this.loading = "success");
           setTimeout(() => {
             this.loading = "disabled";
           }, 1000);
@@ -276,6 +374,8 @@ export default {
 <style scoped lang="scss">
 .form {
   max-width: 600px;
+  height: 80vh;
+  overflow-y: auto;
   padding: 20px;
   margin: 0 auto;
   display: flex;
@@ -297,13 +397,16 @@ export default {
   input {
     padding: 7px 11px;
     display: block;
-    box-shadow: inset 0 0.0625em 0.125em rgba(10, 10, 10, 0.05);
     max-width: 100%;
     width: 100%;
     background-color: #fff;
     border-radius: 4px;
     border: 1px solid #dbdbdb;
     color: #363636;
+    transition: all 0.5s;
+    &:focus {
+      box-shadow: 0 0 6px 2px rgba(10, 10, 10, 0.07);
+    }
   }
   .required {
     color: red;
@@ -381,6 +484,26 @@ export default {
   .form__group-city,
   .form__group-house {
     grid-column: 3/5;
+  }
+}
+
+.passport {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+
+  .form__group-documentType {
+    grid-column: 1/3;
+    .FormSelect__control {
+      max-width: 100%;
+    }
+  }
+
+  .form__group-issuedBy {
+    grid-column: 1/3;
+  }
+  .form__group-dateIssue {
+    grid-row: 4;
   }
 }
 </style>
