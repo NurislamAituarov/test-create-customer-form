@@ -185,6 +185,8 @@
       </div>
     </div>
 
+    <hr class="line" />
+
     <h4>Паспорт:</h4>
 
     <div class="passport">
@@ -408,6 +410,7 @@ export default {
       box-shadow: 0 0 6px 2px rgba(10, 10, 10, 0.07);
     }
   }
+
   .required {
     color: red;
   }
@@ -513,6 +516,18 @@ export default {
     padding: 10px;
     box-shadow: none;
     height: 100%;
+    .form__group,
+    .FormSelect__control {
+      max-width: 100% !important;
+    }
+  }
+
+  .passport,
+  .address {
+    grid-template-columns: 1fr;
+    .form__group {
+      grid-column: 1;
+    }
   }
 }
 </style>
