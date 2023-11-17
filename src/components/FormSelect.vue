@@ -2,11 +2,12 @@
   <div class="FormSelect__control" :class="{ multiselect: multiselect }">
     <button
       ref="button"
-      :id="`${_uid}-button`"
+      class="FormSelect__button"
       aria-haspopup="listbox"
+      :id="`${_uid}-button`"
       :aria-labelledby="`${_uid}-label ${_uid}-button`"
       :aria-expanded="optionsVisible"
-      class="FormSelect__button"
+      :class="{ 'form__input-error': error }"
       @click.prevent="toggleOptions"
       @keyup.up.down.prevent="showOptions"
       @keyup.up.prevent="selectPrevOption"
@@ -86,6 +87,10 @@ export default {
       default: "",
     },
     multiselect: {
+      type: Boolean,
+      default: false,
+    },
+    error: {
       type: Boolean,
       default: false,
     },
@@ -246,6 +251,9 @@ export default {
 .selected-option {
   pointer-events: none;
   opacity: 0.5;
+}
+.form__input-error {
+  border: 1px solid #f79483;
 }
 </style>
   

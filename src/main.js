@@ -4,6 +4,7 @@ import App from './App.vue';
 import './assets/styles/main.scss';
 
 Vue.config.productionTip = false;
+Vue.config.devtools = true;
 Vue.use(Vuelidate);
 
 new Vue({
