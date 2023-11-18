@@ -7,9 +7,14 @@
       :id="id"
       :placeholder="placeholder"
     />
-    <span v-if="validations.$error && !validations.required" class="form__error"
+    <span
+      v-if="id === 'city' && validations.$error && !validations.required"
+      class="form__error"
       >Город проживания обязателен</span
     >
+    <span v-if="id === 'number' && !validations.numeric" class="form__error">
+      Номер состоит из цифр
+    </span>
   </div>
 </template>
 

@@ -1,42 +1,27 @@
 <template>
   <form @submit.prevent="submitForm" class="form">
-    <div class="form__group">
-      <label for="lastName">Фамилия<span class="required">*</span></label>
-      <input
-        v-model="$v.lastName.$model"
-        type="text"
-        id="lastName"
-        :class="{ 'form__input-error': $v.lastName.$error }"
-      />
-      <span
-        v-if="$v.lastName.$error && !$v.lastName.required"
-        class="form__error"
-        >Фамилия обязательна</span
-      >
-      <span v-if="!$v.lastName.minLength" class="form__error"
-        >Имя должно состоять минимум из 3 букв.</span
-      >
-    </div>
+    <text-form-field
+      label="Фамилия"
+      fieldId="lastName"
+      v-model="$v.lastName.$model"
+      :validations="$v.lastName"
+      required
+    />
 
-    <div class="form__group">
-      <label for="firstName">Имя<span class="required">*</span></label>
-      <input
-        v-model="$v.firstName.$model"
-        type="text"
-        id="firstName"
-        :class="{ 'form__input-error': $v.firstName.$error }"
-      />
-      <span
-        v-if="$v.firstName.$error && !$v.firstName.required"
-        class="form__error"
-        >Имя обязательно</span
-      >
-    </div>
+    <text-form-field
+      label="Имя"
+      fieldId="firstName"
+      v-model="$v.firstName.$model"
+      :validations="$v.firstName"
+      required
+    />
 
-    <div class="form__group">
-      <label for="patronymic">Отчество</label>
-      <input v-model="$v.patronymic.$model" type="text" id="patronymic" />
-    </div>
+    <text-form-field
+      label="Отчество"
+      fieldId="patronymic"
+      v-model="$v.patronymic.$model"
+      :validations="$v.patronymic"
+    />
 
     <div class="form__group form__group-date">
       <label for="birthdate"
@@ -55,31 +40,13 @@
       >
     </div>
 
-    <div class="form__group">
-      <label for="phoneNumber"
-        >Номер телефона<span class="required">*</span></label
-      >
-      <input
-        v-model="$v.phoneNumber.$model"
-        type="text"
-        id="phoneNumber"
-        :class="{ 'form__input-error': $v.phoneNumber.$error }"
-      />
-      <span
-        v-if="$v.phoneNumber.$error && !$v.phoneNumber.required"
-        class="form__error"
-        >Номер телефона обязателен</span
-      >
-      <span v-else-if="!$v.phoneNumber.startsWith7" class="form__error"
-        >Номер телефона должен начинаться с 7</span
-      >
-      <span v-else-if="!$v.phoneNumber.numeric" class="form__error">
-        Номер состоит из цифр
-      </span>
-      <span v-else-if="!$v.phoneNumber.minLength" class="form__error"
-        >Номер телефона должен содержать 11 цифр</span
-      >
-    </div>
+    <text-form-field
+      label="Номер телефона"
+      fieldId="phoneNumber"
+      v-model="$v.phoneNumber.$model"
+      :validations="$v.phoneNumber"
+      required
+    />
 
     <div class="form__group">
       <label for="phoneNumber">Пол</label>
@@ -135,52 +102,14 @@
 
     <div class="address">
       <form-group
-        v-model="$v.index.$model"
+        v-for="field of addressFields"
+        :key="field.name"
+        v-model="$v[field.name].$model"
         type="text"
-        placeholder="Индекс"
-        id="index"
-        group-type="index"
-        :validations="$v.index"
-      />
-      <form-group
-        v-model="$v.country.$model"
-        type="text"
-        placeholder="Страна"
-        id="country"
-        group-type="country"
-        :validations="$v.country"
-      />
-      <form-group
-        type="text"
-        v-model="$v.region.$model"
-        placeholder="Облость"
-        id="region"
-        group-type="region"
-        :validations="$v.region"
-      />
-      <form-group
-        type="text"
-        v-model="$v.city.$model"
-        placeholder="Город*"
-        id="city"
-        group-type="city"
-        :validations="$v.city"
-      />
-      <form-group
-        v-model="$v.street.$model"
-        type="text"
-        placeholder="Улица"
-        id="street"
-        group-type="street"
-        :validations="$v.street"
-      />
-      <form-group
-        v-model="$v.house.$model"
-        type="text"
-        placeholder="Дом"
-        id="house"
-        group-type="house"
-        :validations="$v.house"
+        :placeholder="field.placeholder"
+        :id="field.name"
+        :group-type="field.name"
+        :validations="$v[field.name]"
       />
     </div>
 
@@ -210,34 +139,34 @@
           >Тип документа обязательна</span
         >
       </div>
-      <div class="form__group form__group-series">
-        <input
-          v-model="$v.series.$model"
-          type="text"
-          id="series"
-          placeholder="Серия"
-        />
-      </div>
-      <div class="form__group form__group-number">
-        <input
-          v-model="$v.number.$model"
-          type="text"
-          id="number"
-          placeholder="Номер"
-          :class="{ 'form__input-error': $v.number.$error }"
-        />
-        <span v-if="!$v.number.numeric" class="form__error">
-          Номер состоит из цифр
-        </span>
-      </div>
-      <div class="form__group form__group-issuedBy">
-        <input
-          v-model="$v.issuedBy.$model"
-          type="text"
-          id="issuedBy"
-          placeholder="Кем выдан"
-        />
-      </div>
+
+      <form-group
+        v-model="$v.series.$model"
+        type="text"
+        placeholder="Серия"
+        id="series"
+        group-type="series"
+        :validations="$v.series"
+      />
+
+      <form-group
+        v-model="$v.number.$model"
+        type="text"
+        id="number"
+        placeholder="Номер"
+        group-type="number"
+        :validations="$v.number"
+      />
+
+      <form-group
+        v-model="$v.issuedBy.$model"
+        type="text"
+        placeholder="Кем выдан"
+        id="issuedBy"
+        group-type="issuedBy"
+        :validations="$v.issuedBy"
+      />
+
       <div class="form__group form__group-dateIssue">
         <label for="birthdate"
           >Дата выдачи<span class="required">*</span></label
@@ -271,9 +200,10 @@ import {
 import BaseBtn from "./base/BaseSubmitBtn.vue";
 import FormSelect from "./FormSelect.vue";
 import FormGroup from "./FormGroup.vue";
+import TextFormField from "./TextFormField.vue";
 
 export default {
-  components: { FormSelect, BaseBtn, FormGroup },
+  components: { FormSelect, BaseBtn, FormGroup, TextFormField },
   data() {
     return {
       lastName: "",
@@ -301,6 +231,15 @@ export default {
 
       submitStatus: null,
       loading: "disabled",
+
+      addressFields: [
+        { name: "index", placeholder: "Индекс" },
+        { name: "country", placeholder: "Страна" },
+        { name: "region", placeholder: "Область" },
+        { name: "city", placeholder: "Город*" },
+        { name: "street", placeholder: "Улица" },
+        { name: "house", placeholder: "Дом" },
+      ],
     };
   },
   validations: {
