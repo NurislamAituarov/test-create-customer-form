@@ -31,6 +31,7 @@
       :aria-labelledby="`${_uid}-label`"
       :aria-activedescendant="activeDescendant"
       class="form-select__options"
+      :class="{ 'form__input-error': error }"
       @keyup.up.prevent="selectPrevOption"
       @keyup.down.prevent="selectNextOption"
       @keydown="search"
@@ -135,7 +136,11 @@ export default {
     },
     handleOptionClick(option) {
       if (this.multiselect) {
-        this.$emit("change", [...this.value, option]);
+        const updatedValues = this.value.includes(option)
+          ? this.value.filter((el) => el !== option)
+          : [...this.value, option];
+
+        this.$emit("change", updatedValues);
       } else {
         this.$emit("change", option);
       }
@@ -250,11 +255,7 @@ export default {
   max-width: 100%;
 }
 .selected-option {
-  pointer-events: none;
   opacity: 0.5;
-}
-.form__input-error {
-  border: 1px solid #f79483;
 }
 </style>
   
