@@ -101,15 +101,15 @@
     <h4>Адрес:</h4>
 
     <div class="address">
-      <form-group
+      <text-form-field
         v-for="field of addressFields"
         :key="field.name"
         v-model="$v[field.name].$model"
-        type="text"
         :placeholder="field.placeholder"
-        :id="field.name"
         :group-type="field.name"
         :validations="$v[field.name]"
+        :fieldId="field.name"
+        required
       />
     </div>
 
@@ -140,30 +140,24 @@
         >
       </div>
 
-      <form-group
+      <text-form-field
         v-model="$v.series.$model"
-        type="text"
+        fieldId="series"
         placeholder="Серия"
-        id="series"
-        group-type="series"
         :validations="$v.series"
       />
 
-      <form-group
+      <text-form-field
         v-model="$v.number.$model"
-        type="text"
-        id="number"
+        fieldId="number"
         placeholder="Номер"
-        group-type="number"
         :validations="$v.number"
       />
 
-      <form-group
+      <text-form-field
         v-model="$v.issuedBy.$model"
-        type="text"
+        fieldId="issuedBy"
         placeholder="Кем выдан"
-        id="issuedBy"
-        group-type="issuedBy"
         :validations="$v.issuedBy"
       />
 
@@ -199,11 +193,10 @@ import {
 } from "vuelidate/lib/validators";
 import BaseBtn from "./base/BaseSubmitBtn.vue";
 import FormSelect from "./FormSelect.vue";
-import FormGroup from "./FormGroup.vue";
 import TextFormField from "./TextFormField.vue";
 
 export default {
-  components: { FormSelect, BaseBtn, FormGroup, TextFormField },
+  components: { FormSelect, BaseBtn, TextFormField },
   data() {
     return {
       lastName: "",
@@ -313,7 +306,7 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
+<style  lang="scss">
 .form {
   max-width: 600px;
   height: 80vh;

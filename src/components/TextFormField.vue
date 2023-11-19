@@ -1,12 +1,13 @@
 <template>
-  <div class="form__group">
-    <label :for="fieldId"
+  <div class="form__group" :class="`form__group-${fieldId}`">
+    <label v-if="label" :for="fieldId"
       >{{ label }}<span v-if="required" class="required">*</span></label
     >
     <input
       :value="value"
       :type="inputType"
       :id="fieldId"
+      :placeholder="placeholder"
       :class="{ 'form__input-error': validations.$error }"
       @input="$emit('input', $event.target.value)"
     />
@@ -54,6 +55,18 @@
       class="form__error"
       >Номер телефона должен содержать 11 цифр</span
     >
+    <!-- error address -->
+    <span
+      v-if="fieldId === 'city' && validations.$error && !validations.required"
+      class="form__error"
+      >Город проживания обязателен</span
+    >
+    <span
+      v-if="fieldId === 'number' && !validations.numeric"
+      class="form__error"
+    >
+      Номер состоит из цифр
+    </span>
   </div>
 </template>
   
@@ -72,6 +85,7 @@ export default {
       default: "text",
     },
     validations: { type: Object },
+    placeholder: { type: String, default: "" },
   },
 };
 </script>
@@ -79,39 +93,23 @@ export default {
 
 
 <style scoped lang="scss">
-.form__group {
-  border-radius: 4px;
-  label {
-    display: inline-block;
-    margin-bottom: 5px;
-    color: gray;
-  }
-  input {
-    padding: 7px 11px;
-    display: block;
-    max-width: 100%;
-    width: 100%;
-    background-color: #fff;
-    border-radius: 4px;
-    border: 1px solid #dbdbdb;
-    color: #363636;
-    transition: all 0.5s;
-    &:focus {
-      box-shadow: 0 0 6px 2px rgba(10, 10, 10, 0.07);
-    }
-  }
-
-  .required {
-    color: red;
-  }
-  .form__input-error {
-    border: 1px solid #f79483;
-  }
+.form__group-city,
+.form__group-house {
+  grid-column: 3/5;
 }
-.form__error {
-  color: #f57f6c;
-  display: block;
-  font-size: 12px;
-  line-height: 14px;
+.form__group-country {
+  grid-column: 2/5;
+}
+.form__group-region,
+.form__group-street {
+  grid-column: 1/3;
+}
+.form__group-city,
+.form__group-house {
+  grid-column: 3/5;
+}
+
+.form__group-issuedBy {
+  grid-column: 1/3;
 }
 </style>
