@@ -2,6 +2,7 @@
   <div class="form-select__control" :class="{ multiselect: multiselect }">
     <button
       ref="button"
+      type="button"
       class="form-select__button"
       aria-haspopup="listbox"
       :id="`${_uid}-button`"
@@ -34,22 +35,24 @@
       :class="{ 'form__input-error': error }"
       @keyup.up.prevent="selectPrevOption"
       @keyup.down.prevent="selectNextOption"
-      @keydown="search"
       @keydown.up.down.prevent
       @keydown.enter.esc.prevent="reset"
     >
       <li
         v-for="(option, index) in options"
         :key="option.label || option"
+        :ref="setItemRef"
+        role="option"
+        tabindex="0"
+        class="form-select__option"
         :id="`${_uid}-option-${index}`"
         :aria-selected="activeOptionIndex === index"
         :class="{
           'has-focus': activeOptionIndex === index,
           'selected-option': multiselect && value.includes(option),
         }"
-        class="form-select__option"
-        role="option"
         @click="handleOptionClick(option)"
+        @keydown.enter.prevent="handleOptionClick(option)"
       >
         {{ option.label || option }}
       </li>
@@ -59,8 +62,6 @@
   
   <script>
 import SvgAngle from "./SvgAngle.vue";
-
-let resetKeysSoFarTimer;
 
 export default {
   name: "FormSelect",
@@ -101,46 +102,36 @@ export default {
       keysSoFar: "",
       tabKeyPressed: false,
       optionsVisible: false,
+      optionsRef: [],
+      optionIndex: -1,
     };
   },
+
   computed: {
     activeOptionIndex() {
       return this.options.findIndex(
         (x) => x.value === this.value || x === this.value
       );
     },
-    prevOptionIndex() {
-      const next = this.activeOptionIndex - 1;
-      return next >= 0 ? next : this.options.length - 1;
-    },
-    nextOptionIndex() {
-      const next = this.activeOptionIndex + 1;
-      return next <= this.options.length - 1 ? next : 0;
-    },
+
     activeDescendant() {
       return `${this._uid}-option-${this.activeOptionIndex}`;
     },
 
     valueMain() {
       if (this.multiselect) {
-        return this.value.length ? this.value.join(", ") : "-";
+        return Array.isArray(this.value) && this.value.length
+          ? this.value.join(", ")
+          : "-";
       }
 
       return this.value;
     },
   },
   methods: {
-    handleFocusTrap() {
-      this.optionsVisible = true;
-      this.$refs.button.focus();
-    },
     handleOptionClick(option) {
       if (this.multiselect) {
-        const updatedValues = this.value.includes(option)
-          ? this.value.filter((el) => el !== option)
-          : [...this.value, option];
-
-        this.$emit("change", updatedValues);
+        this.$emit("change", this.updateValuesWithOption(option));
       } else {
         this.$emit("change", option);
       }
@@ -157,7 +148,6 @@ export default {
     async showOptions() {
       this.optionsVisible = true;
       await this.$nextTick();
-      this.$refs.options.focus();
     },
     hideOptions() {
       this.optionsVisible = false;
@@ -172,28 +162,34 @@ export default {
       this.$emit("change", this.options[0]);
     },
     selectPrevOption() {
-      this.$emit("change", this.options[this.prevOptionIndex]);
+      this.optionIndex -= 1;
+      if (this.optionIndex < 0) {
+        this.optionIndex = this.options.length - 1;
+      }
+
+      this.optionsRef[this.optionIndex].focus();
     },
+
     selectNextOption() {
-      this.$emit("change", this.options[this.nextOptionIndex]);
+      this.optionIndex += 1;
+      if (this.optionIndex >= this.options.length) {
+        this.optionIndex = 0;
+      }
+      this.optionsRef[this.optionIndex].focus();
     },
-    search(e) {
-      clearTimeout(resetKeysSoFarTimer);
-      // No alphanumeric key was pressed.
-      if (e.key.length > 1) return;
 
-      resetKeysSoFarTimer = setTimeout(() => {
-        this.keysSoFar = "";
-      }, 500);
+    updateValuesWithOption(option) {
+      const updatedValues = this.value.includes(option)
+        ? this.value.filter((el) => el !== option)
+        : [...this.value, option];
 
-      this.keysSoFar += e.key;
-      const matchingOption = this.options.find((x) =>
-        (x.value || x).toLowerCase().startsWith(this.keysSoFar)
-      );
+      return updatedValues;
+    },
 
-      if (!matchingOption) return;
-
-      this.$emit("change", matchingOption);
+    setItemRef(el) {
+      if (el) {
+        this.optionsRef.push(el);
+      }
     },
   },
 };
@@ -208,6 +204,9 @@ export default {
     border-radius: 4px;
     border: 1px solid #dbdbdb;
     color: #363636;
+    &:focus-within {
+      box-shadow: 0 0 6px 2px rgba(10, 10, 10, 0.07);
+    }
   }
 
   &__button {
@@ -245,6 +244,9 @@ export default {
     cursor: pointer;
     &.has-focus {
       background-color: rgba(#d5d5d5, 0.25);
+    }
+    &:focus {
+      box-shadow: 0 0 6px 2px rgba(10, 10, 10, 0.07);
     }
   }
 }
