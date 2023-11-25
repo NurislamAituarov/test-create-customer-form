@@ -1,5 +1,9 @@
 <template>
-  <div class="form-select__control" :class="{ multiselect: multiselect }">
+  <div
+    ref="containerSelect"
+    class="form-select__control"
+    :class="{ multiselect: multiselect }"
+  >
     <button
       ref="button"
       type="button"
@@ -107,6 +111,19 @@ export default {
     };
   },
 
+  mounted() {
+    document.addEventListener("click", (e) => {
+      const select = this.$refs.containerSelect;
+      const target = e.target;
+
+      const clickedInsideSelect = select.contains(target);
+
+      if (!clickedInsideSelect) {
+        this.hideOptions();
+      }
+    });
+  },
+
   computed: {
     activeOptionIndex() {
       return this.options.findIndex(
@@ -154,6 +171,7 @@ export default {
     },
     async reset() {
       this.hideOptions();
+      this.optionIndex = -1;
       await this.$nextTick();
       this.$refs.button.focus();
     },
@@ -202,7 +220,6 @@ export default {
     position: relative;
     background-color: #fff;
     border-radius: 4px;
-    border: 1px solid #dbdbdb;
     color: #363636;
     &:focus-within {
       box-shadow: 0 0 6px 2px rgba(10, 10, 10, 0.07);
@@ -215,7 +232,8 @@ export default {
     justify-content: space-between;
     align-items: center;
     background-color: transparent;
-    border: none;
+    border: 1px solid #dbdbdb;
+    border-radius: 4px;
     outline: none;
     cursor: pointer;
     padding: 10px;
@@ -232,12 +250,27 @@ export default {
   }
 
   &__options {
+    width: 100%;
     margin: 0;
     padding: 0;
     list-style-type: none;
     outline: none;
+    background-color: white;
+    position: absolute;
+    top: 37px;
+    border: 1px solid #dbdbdb;
+    border-top: none !important;
+    z-index: 10;
+    animation: 0.3s show ease;
   }
-
+  @keyframes show {
+    from {
+      transform: translateY(-20px);
+    }
+    to {
+      transform: translateY(0px);
+    }
+  }
   &__option {
     cursor: default;
     padding: 5px 10px;

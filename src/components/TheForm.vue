@@ -315,7 +315,7 @@ export default {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
   border-radius: 10px;
   box-shadow: 0px 0px 5px 0px #dadada;
   .btn {
@@ -324,6 +324,7 @@ export default {
 }
 
 .form__group {
+  position: relative;
   border-radius: 4px;
   label {
     display: inline-block;
@@ -350,6 +351,7 @@ export default {
   }
   .form__input-error {
     border: 1px solid #f79483;
+    box-shadow: 0 0 6px 2px rgba(247, 148, 131, 0.3);
   }
 }
 
@@ -395,6 +397,7 @@ export default {
   max-width: 200px;
 }
 .form__error {
+  position: absolute;
   color: #f57f6c;
   display: block;
   font-size: 12px;
@@ -412,12 +415,14 @@ export default {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   gap: 10px;
+  row-gap: 16px;
 }
 
 .passport {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
+  row-gap: 16px;
 
   .form__group-documentType {
     grid-column: 1/3;
