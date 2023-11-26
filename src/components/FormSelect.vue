@@ -40,7 +40,6 @@
       @keyup.up.prevent="selectPrevOption"
       @keyup.down.prevent="selectNextOption"
       @keydown.up.down.prevent
-      @keydown.enter.esc.prevent="reset"
     >
       <li
         v-for="(option, index) in options"
@@ -112,16 +111,10 @@ export default {
   },
 
   mounted() {
-    document.addEventListener("click", (e) => {
-      const select = this.$refs.containerSelect;
-      const target = e.target;
-
-      const clickedInsideSelect = select.contains(target);
-
-      if (!clickedInsideSelect) {
-        this.hideOptions();
-      }
-    });
+    document.addEventListener("click", this.handleOutsideClick);
+  },
+  unmounted() {
+    document.removeEventListener("click", this.handleOutsideClick);
   },
 
   computed: {
@@ -151,9 +144,8 @@ export default {
         this.$emit("change", this.updateValuesWithOption(option));
       } else {
         this.$emit("change", option);
+        this.reset();
       }
-
-      this.reset();
     },
     handleBlur(e) {
       if (this.$el.contains(e.relatedTarget)) return;
@@ -207,6 +199,17 @@ export default {
     setItemRef(el) {
       if (el) {
         this.optionsRef.push(el);
+      }
+    },
+
+    handleOutsideClick(e) {
+      const select = this.$refs.containerSelect;
+      const target = e.target;
+
+      const clickedInsideSelect = select?.contains(target);
+
+      if (!clickedInsideSelect) {
+        this.hideOptions();
       }
     },
   },
@@ -278,8 +281,12 @@ export default {
     &.has-focus {
       background-color: rgba(#d5d5d5, 0.25);
     }
-    &:focus {
+    &:focus,
+    &:hover {
       box-shadow: 0 0 6px 2px rgba(10, 10, 10, 0.07);
+    }
+    &:not(:last-child) {
+      border-bottom: 1px solid rgba(219, 219, 219, 0.5);
     }
   }
 }
@@ -290,7 +297,7 @@ export default {
   max-width: 100%;
 }
 .selected-option {
-  opacity: 0.5;
+  background-color: rgba(213, 213, 213, 0.25);
 }
 </style>
   
